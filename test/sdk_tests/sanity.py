@@ -42,6 +42,51 @@ try:
 except ApiException as e:
     print("Exception when calling UserApi->get_user_fund_margin: %s\n" % e)
 
+api_instance = upstox_client.UserApi(upstox_client.ApiClient(configuration))
+try:
+    api_response = api_instance.get_user_fund_margin_v3()
+    if api_response.data is None:
+        print("Wrong response from get_user_fund_margin_v3")
+except ApiException as e:
+    print("Exception when calling UserApi->get_user_fund_margin_v3: %s\n" % e)
+
+api_instance = upstox_client.UserApi(upstox_client.ApiClient(configuration))
+try:
+    api_response = api_instance.get_user_ips()
+    if api_response.status != "success":
+        print("Wrong response from get_user_ips")
+except ApiException as e:
+    print("Exception when calling UserApi->get_user_ips: %s\n" % e)
+
+api_instance = upstox_client.UserApi(upstox_client.ApiClient(configuration))
+body = upstox_client.UpdateUserIpRequest(primary_ip="1.2.3.4")
+try:
+    api_response = api_instance.update_user_ip(body)
+    if api_response.status != "success":
+        print("Wrong response from update_user_ip")
+except ApiException as e:
+    json_string = e.body.decode('utf-8')
+    data_dict = json.loads(json_string)
+    if data_dict.get('errors')[0].get('errorCode') not in ["UDAPI100068", "UDAPI100069"]:
+        print("update_user_ip giving wrong response")
+
+api_instance = upstox_client.UserApi(upstox_client.ApiClient(configuration))
+try:
+    api_response = api_instance.get_kill_switch()
+    if api_response.status != "success":
+        print("Wrong response from get_kill_switch")
+except ApiException as e:
+    print("Exception when calling UserApi->get_kill_switch: %s\n" % e)
+
+api_instance = upstox_client.UserApi(upstox_client.ApiClient(configuration))
+body = [upstox_client.KillSwitchSegmentUpdateRequest(segment="NSE_EQ", action="DISABLE")]
+try:
+    api_response = api_instance.update_kill_switch(body)
+    if api_response.status != "success":
+        print("Wrong response from update_kill_switch")
+except ApiException as e:
+    print("Exception when calling UserApi->update_kill_switch: %s\n" % e)
+
 api_instance = upstox_client.ChargeApi(upstox_client.ApiClient(configuration))
 instrument_token = 'NSE_EQ|INE669E01016'
 quantity = 10
@@ -778,6 +823,53 @@ except ApiException as e:
 
 print("\n=== Algo ID Tests Complete ===")
 print("All 12 APIs tested with algo_name parameter successfully!")
+
+api_instance = upstox_client.InstrumentsApi(upstox_client.ApiClient(configuration))
+
+# Basic search with just query
+try:
+    api_response = api_instance.search_instrument("Nifty 50")
+    
+    if api_response.status != "success":
+        print("error in search_instrument basic query")
+except ApiException as e:
+    print("Exception when calling InstrumentsApi->search_instrument: %s\n" % e)
+
+# Search with exchange filter
+try:
+    api_response = api_instance.search_instrument("Reliance", exchanges="NSE")
+   
+    if api_response.status != "success":
+        print("error in search_instrument with exchange filter")
+except ApiException as e:
+    print("Exception when calling InstrumentsApi->search_instrument with exchange: %s\n" % e)
+
+# Search with segment filter
+try:
+    api_response = api_instance.search_instrument("TCS", segments="EQ")
+    
+    if api_response.status != "success":
+        print("error in search_instrument with segment filter")
+except ApiException as e:
+    print("Exception when calling InstrumentsApi->search_instrument with segment: %s\n" % e)
+
+# Search with instrument type filter
+try:
+    api_response = api_instance.search_instrument("Nifty", instrument_types="INDEX")
+    
+    if api_response.status != "success":
+        print("error in search_instrument with instrument type filter")
+except ApiException as e:
+    print("Exception when calling InstrumentsApi->search_instrument with instrument_types: %s\n" % e)
+
+# Search with pagination
+try:
+    api_response = api_instance.search_instrument("HDFC", page_number=1, records=5)
+    
+    if api_response.status != "success":
+        print("error in search_instrument with pagination")
+except ApiException as e:
+    print("Exception when calling InstrumentsApi->search_instrument with pagination: %s\n" % e)
 
 
 api_instance = upstox_client.LoginApi(upstox_client.ApiClient(configuration))
